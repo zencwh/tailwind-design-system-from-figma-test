@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -71,3 +72,7 @@ export default defineConfig([
   },
 ])
 ```
+=======
+# tailwind-design-system-from-figma-test
+For testing design system read from MCP server
+>>>>>>> 48588d82c59c5ccaa2eccfb18477e227253ee250
