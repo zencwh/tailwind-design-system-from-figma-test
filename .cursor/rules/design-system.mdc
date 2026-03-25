@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+Always use components from "@/components/ui"
+
+Never create raw HTML buttons, inputs, modals
+
+If a Figma element matches a known component, reuse it
+
+Follow existing props and variants from design system
+
+Use design tokens for spacing, color, typography
