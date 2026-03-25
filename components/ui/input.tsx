@@ -1,71 +1,155 @@
 import type { InputHTMLAttributes, ReactNode } from 'react'
 
-export type InputVariant = 'default' | 'error'
-export type InputSize = 'sm' | 'md'
+const userAltImgGroup = 'https://www.figma.com/api/mcp/asset/5f21ae7a-078c-4dc0-9063-d6c56af9a012'
+const userAltImgGroup1 = 'https://www.figma.com/api/mcp/asset/6df7d38b-8424-40a8-bb56-ecfa3d6833e7'
+const eyeAltImg = 'https://www.figma.com/api/mcp/asset/2300775d-3319-44b2-85ae-541577f14e46'
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+const errorInfoImg = 'https://www.figma.com/api/mcp/asset/94b71208-cc58-480a-997c-8d51fb9bd359'
+
+const successCheckImg = 'https://www.figma.com/api/mcp/asset/b8187874-f47b-419d-915d-65d9d52b378f'
+
+export type InputState = 'Default' | 'Disabled'
+export type InputStatus = 'Default' | 'Error' | 'Success'
+
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string
-  hint?: string
-  error?: string
-  leadingIcon?: ReactNode
-  trailingIcon?: ReactNode
-  variant?: InputVariant
-  size?: InputSize
+  helperText?: string
+  showLabel?: boolean
+  showHelperText?: boolean
+
+  state?: InputState
+  status?: InputStatus
+
+  placeholder?: string
+
+  leftIcon?: boolean
+  leftIconNode?: ReactNode | null
+
+  rightIcon?: boolean
+  rightIconNode?: ReactNode | null
 }
 
 export function Input({
   label,
-  hint,
-  error,
-  leadingIcon,
-  trailingIcon,
-  variant = 'default',
-  size = 'md',
+  helperText,
+  showLabel = true,
+  showHelperText = true,
+  state = 'Default',
+  status = 'Default',
+  placeholder = 'Placeholder',
+  leftIcon = false,
+  leftIconNode = null,
+  rightIcon = true,
+  rightIconNode = null,
   className = '',
   id,
+  disabled,
   ...props
 }: InputProps) {
   const inputId = id ?? props.name ?? undefined
-  const isError = variant === 'error' || Boolean(error)
+  const isDisabled = state === 'Disabled' || Boolean(disabled)
+  const isError = status === 'Error'
+  const isSuccess = status === 'Success'
 
-  const sizeClasses = size === 'sm' ? 'h-9 text-sm' : 'h-11 text-[16px] leading-[24px]'
+  const labelTextClass = isDisabled ? 'text-[#6B7280]' : 'text-[#111928]'
+  const helperTextClass = isDisabled
+    ? 'text-[#6B7280]'
+    : isError
+      ? 'text-[#F23030]'
+      : isSuccess
+        ? 'text-[#22AD5C]'
+        : 'text-[#4B5563]'
 
-  const base =
-    'block w-full rounded-md border bg-white px-3 text-dark placeholder:text-muted shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+  const borderClass = isDisabled
+    ? 'border-[#f3f4f6]'
+    : isError
+      ? 'border-[#f23030]'
+      : isSuccess
+        ? 'border-[#22ad5c]'
+        : 'border-[#dfe4ea]'
 
-  const borderClasses = isError ? 'border-red-500' : 'border-stroke'
-
-  const wrapperClasses = [
-    'flex items-center gap-2 rounded-md bg-white',
-    isError ? 'ring-1 ring-red-500/40' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const inputTextClass = isDisabled ? 'text-[#6B7280]' : 'text-[#111928]'
 
   return (
-    <div className={className}>
-      {label ? (
-        <label htmlFor={inputId} className="mb-1 block text-sm font-medium text-dark">
-          {label}
+    <div
+      className={[
+        'content-stretch flex flex-col gap-[5px] items-start w-[250px]',
+        className,
+      ].join(' ')}
+    >
+      {showLabel ? (
+        <label
+          htmlFor={inputId}
+          className="content-stretch flex items-start relative shrink-0 w-[250px]"
+        >
+          <p
+            className={[
+              "font-['Inter:Medium',sans-serif] font-medium leading-[24px] not-italic relative shrink-0 whitespace-nowrap text-[16px]",
+              labelTextClass,
+            ].join(' ')}
+          >
+            {label ?? 'Label'}
+          </p>
         </label>
       ) : null}
 
-      <div className={wrapperClasses}>
-        {leadingIcon ? <span className="pl-3 text-muted">{leadingIcon}</span> : null}
+      <div
+        className={[
+          'bg-white border border-solid content-stretch flex items-center gap-[10px] min-h-px min-w-px pl-[20px] pr-[16px] py-[12px] relative rounded-[6px] w-full',
+          isDisabled ? 'bg-[#f3f4f6]' : 'bg-white',
+          borderClass,
+        ].join(' ')}
+      >
+        {leftIcon ? (
+          leftIconNode ? (
+            leftIconNode
+          ) : (
+            <div className="overflow-clip relative shrink-0 size-[16px]">
+              <div className="absolute contents inset-[2.81%_13.44%_2.66%_13.59%]">
+                <div className="absolute inset-[2.81%_28.91%_56.25%_28.91%]">
+                  <img alt="" className="absolute block max-w-none size-full" src={userAltImgGroup} />
+                </div>
+                <div className="absolute inset-[49.84%_13.44%_2.66%_13.59%]">
+                  <img alt="" className="absolute block max-w-none size-full" src={userAltImgGroup1} />
+                </div>
+              </div>
+            </div>
+          )
+        ) : null}
+
         <input
           id={inputId}
-          className={[base, borderClasses, sizeClasses, leadingIcon ? 'pl-1' : '', trailingIcon ? 'pr-1' : '']
-            .filter(Boolean)
-            .join(' ')}
+          className={[
+            'content-stretch flex flex-[1_0_0] items-center justify-between min-h-px min-w-px relative bg-transparent border-none p-0 m-0 outline-none text-[16px] leading-[24px] font-normal w-full placeholder:text-[#9CA3AF]',
+            inputTextClass,
+          ].join(' ')}
+          placeholder={placeholder}
+          disabled={isDisabled}
           {...props}
         />
-        {trailingIcon ? <span className="pr-3 text-muted">{trailingIcon}</span> : null}
+
+        {rightIcon ? (
+          rightIconNode ? (
+            rightIconNode
+          ) : (
+            <div className="overflow-clip relative shrink-0 size-[16px]">
+              <div className="absolute inset-[17.81%_2.73%]">
+                <img alt="" className="absolute block max-w-none size-full" src={isError ? errorInfoImg : isSuccess ? successCheckImg : eyeAltImg} />
+              </div>
+            </div>
+          )
+        ) : null}
       </div>
 
-      {error ? (
-        <p className="mt-1 text-xs text-red-600">{error}</p>
-      ) : hint ? (
-        <p className="mt-1 text-xs text-muted">{hint}</p>
+      {showHelperText ? (
+        <p
+          className={[
+            "font-['Inter:Regular',sans-serif] font-normal leading-[22px] not-italic relative shrink-0 w-full whitespace-nowrap text-[14px]",
+            helperTextClass,
+          ].join(' ')}
+        >
+          {helperText ?? 'Helper Text'}
+        </p>
       ) : null}
     </div>
   )
