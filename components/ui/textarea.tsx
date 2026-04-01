@@ -26,36 +26,105 @@ export function Textarea({
   disabled,
   value,
   onChangeText,
-  ...rest
 }: TextareaProps) {
   const isDisabled = state === 'Disabled' || Boolean(disabled)
-  const border =
-    state === 'Focused' ? 'border-2 border-[#c3cef6]' : state === 'Hover' ? 'border-[1.5px] border-primary' : 'border border-stroke'
-  const bg = isDisabled ? 'bg-[#f3f4f6]' : 'bg-white'
-  const labelColor = isDisabled ? 'text-[#6b7280]' : 'text-dark'
-  const helperColor = 'text-muted'
+  const isDisabledAndShowLabel = state === 'Disabled' && showLabel
+  const isHelperTextAndShowLabelAndShowCounterAndIsDefaultOrHoverOrFocused = showHelperText && showLabel && showCounter && ['Default', 'Hover', 'Focused'].includes(state)
+  const isNotHelperTextAndShowCounterAndIsNotShowLabelOrDefaultAndShowLabelOr = !showHelperText && showCounter && (!showLabel || (state === 'Default' && showLabel) || (state === 'Hover' && showLabel) || (state === 'Focused' && showLabel))
+  const isNotHelperTextAndNotShowLabelAndShowCounter = !showHelperText && !showLabel && showCounter
+  const isDisabledAndHelperTextAndShowLabelAndShowCounter = state === 'Disabled' && showHelperText && showLabel && showCounter
+  const isDisabledAndNotHelperTextAndShowLabelAndShowCounter = state === 'Disabled' && !showHelperText && showLabel && showCounter
+  const isHoverAndHelperTextAndShowLabelAndNotShowCounter = state === 'Hover' && showHelperText && showLabel && !showCounter
+  const isFocusedAndHelperTextAndShowLabelAndNotShowCounter = state === 'Focused' && showHelperText && showLabel && !showCounter
 
   return (
-    <div className={['flex h-[220px] w-[500px] flex-col', showLabel || showHelperText || showCounter ? 'gap-[10px]' : '', className].join(' ')}>
-      {showLabel ? <p className={['text-[16px] font-medium leading-[24px]', labelColor].join(' ')}>{label}</p> : null}
-
-      <div className="flex flex-1">
-        <textarea
-          value={value}
-          onChange={(e) => onChangeText?.(e.target.value)}
-          disabled={isDisabled}
-          placeholder={placeholder}
-          className={['h-full w-full resize-none rounded-[6px] p-5 text-[16px] font-normal leading-[24px] text-[#9ca3af] outline-none', bg, border].join(' ')}
-          {...rest}
-        />
-      </div>
-
-      {showHelperText || showCounter ? (
-        <div className="flex w-full items-end justify-between">
-          {showHelperText ? <p className={['text-[14px] font-normal leading-[22px]', helperColor].join(' ')}>{helperText}</p> : <span />}
-          {showCounter ? <p className={['text-[14px] font-normal leading-[22px] text-right', helperColor].join(' ')}>{counterText}</p> : null}
+    <div className={className || `flex flex-col h-[220px] items-start relative w-[500px] ${!showHelperText && !showLabel && !showCounter ? '' : 'gap-[10px]'}`}>
+      {showLabel && ['Default', 'Hover', 'Focused'].includes(state) && (
+        <p className="font-medium leading-[24px] relative shrink-0 text-dark text-[16px] whitespace-nowrap">
+          {label}
+        </p>
+      )}
+      {((state === 'Default' && showLabel) || (state === 'Hover' && showLabel) || (state === 'Focused' && showLabel) || (!showLabel && !showCounter) || isNotHelperTextAndNotShowLabelAndShowCounter) && (
+        <div className="flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative w-full">
+          <textarea
+            value={value}
+            onChange={(e) => onChangeText?.(e.target.value)}
+            disabled={isDisabled}
+            placeholder={placeholder}
+            className={`border-solid flex flex-[1_0_0] items-start min-h-px min-w-px p-[20px] relative rounded-[6px] w-full font-normal leading-[24px] text-[16px] text-[#9ca3af] outline-none ${
+              state === 'Disabled' && !showLabel && (!showCounter || (!showHelperText && showCounter))
+                ? 'bg-[#f3f4f6] border border-stroke'
+                : state === 'Focused' && (showLabel || (!showLabel && !showCounter) || (!showHelperText && !showLabel && showCounter))
+                ? 'bg-white border-2 border-[#c3cef6]'
+                : state === 'Hover' && (showLabel || (!showLabel && !showCounter) || (!showHelperText && !showLabel && showCounter))
+                ? 'bg-white border-[1.5px] border-primary'
+                : 'bg-white border border-stroke'
+            }`}
+          />
         </div>
-      ) : null}
+      )}
+      {((state === 'Default' && showHelperText && showLabel && !showCounter) || isHoverAndHelperTextAndShowLabelAndNotShowCounter || isFocusedAndHelperTextAndShowLabelAndNotShowCounter || (showHelperText && !showLabel && !showCounter) || isNotHelperTextAndNotShowLabelAndShowCounter || (state === 'Default' && showLabel && showCounter) || (state === 'Hover' && showLabel && showCounter) || (state === 'Focused' && showLabel && showCounter)) && (
+        <div className={`flex relative shrink-0 w-full ${isHelperTextAndShowLabelAndShowCounterAndIsDefaultOrHoverOrFocused ? 'items-center justify-between' : isNotHelperTextAndShowCounterAndIsNotShowLabelOrDefaultAndShowLabelOr ? 'items-end justify-end' : 'items-end'}`}>
+          <div className={`inline-grid place-items-start relative shrink-0 ${isHelperTextAndShowLabelAndShowCounterAndIsDefaultOrHoverOrFocused ? '' : ''}`}>
+            {showHelperText && ((state === 'Default' && showLabel) || (state === 'Hover' && showLabel) || (state === 'Focused' && showLabel) || (!showLabel && !showCounter)) && (
+              <p className="font-normal leading-[22px] relative text-muted text-[14px] whitespace-nowrap">
+                {helperText}
+              </p>
+            )}
+            {isNotHelperTextAndShowCounterAndIsNotShowLabelOrDefaultAndShowLabelOr && (
+              <p className="font-normal leading-[22px] relative text-muted text-[14px] text-right whitespace-nowrap">
+                {counterText}
+              </p>
+            )}
+          </div>
+          {isHelperTextAndShowLabelAndShowCounterAndIsDefaultOrHoverOrFocused && (
+            <div className="inline-grid place-items-start relative shrink-0">
+              <p className="font-normal leading-[22px] relative text-muted text-[14px] text-right whitespace-nowrap">
+                {counterText}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+      {isDisabledAndShowLabel && (
+        <>
+          <p className="font-medium leading-[24px] relative shrink-0 text-[#6b7280] text-[16px] whitespace-nowrap">
+            {label}
+          </p>
+          <div className="flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative w-full">
+            <textarea
+              value={value}
+              onChange={(e) => onChangeText?.(e.target.value)}
+              disabled={isDisabled}
+              placeholder={placeholder}
+              className="bg-[#f3f4f6] border border-stroke border-solid flex flex-[1_0_0] items-start min-h-px min-w-px p-[20px] relative rounded-[6px] w-full font-normal leading-[24px] text-[16px] text-[#9ca3af] outline-none"
+            />
+          </div>
+        </>
+      )}
+      {state === 'Disabled' && showLabel && ((showHelperText && !showCounter) || showCounter) && (
+        <div className={`flex relative shrink-0 w-full ${isDisabledAndHelperTextAndShowLabelAndShowCounter ? 'items-center justify-between' : isDisabledAndNotHelperTextAndShowLabelAndShowCounter ? 'items-end justify-end' : 'items-end'}`}>
+          <div className={`inline-grid place-items-start relative shrink-0 ${isDisabledAndHelperTextAndShowLabelAndShowCounter ? '' : ''}`}>
+            {state === 'Disabled' && showHelperText && showLabel && (
+              <p className="font-normal leading-[22px] relative text-muted text-[14px] whitespace-nowrap">
+                {helperText}
+              </p>
+            )}
+            {isDisabledAndNotHelperTextAndShowLabelAndShowCounter && (
+              <p className="font-normal leading-[22px] relative text-muted text-[14px] text-right whitespace-nowrap">
+                {counterText}
+              </p>
+            )}
+          </div>
+          {isDisabledAndHelperTextAndShowLabelAndShowCounter && (
+            <div className="inline-grid place-items-start relative shrink-0">
+              <p className="font-normal leading-[22px] relative text-muted text-[14px] text-right whitespace-nowrap">
+                {counterText}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
