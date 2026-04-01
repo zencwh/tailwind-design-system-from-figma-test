@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 const imgLogomark = "https://www.figma.com/api/mcp/asset/c593339f-e332-44f7-8558-5aa01febfa2f";
 const imgTailGrids = "https://www.figma.com/api/mcp/asset/b3854b4f-7923-4ad8-8c37-2c0deb3c10b3";
 
