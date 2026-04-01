@@ -3,38 +3,32 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 
-interface SignUpFormState {
+type AuthMode = 'sign-up' | 'sign-in';
+
+interface FormState {
   name: string;
   email: string;
   error: string;
 }
 
 export const VendorSignUp: React.FC = () => {
-  const [signUpForm, setSignUpForm] = useState<SignUpFormState>({
+  const [mode, setMode] = useState<AuthMode>('sign-up');
+  const [form, setForm] = useState<FormState>({
     name: '',
     email: '',
     error: '',
   });
+  const [loading, setLoading] = useState(false);
 
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    error: '',
-  });
-
-  const [signUpLoading, setSignUpLoading] = useState(false);
-  const [loginLoading, setLoginLoading] = useState(false);
-
-  const handleSignUpChange = (field: keyof SignUpFormState, value: string) => {
-    setSignUpForm((prev) => ({
-      ...prev,
-      [field]: value,
-      error: '',
-    }));
+  const handleModeChange = (newMode: AuthMode) => {
+    setMode(newMode);
+    setForm({ name: '', email: '', error: '' });
   };
 
-  const handleLoginChange = (field: string, value: string) => {
-    setLoginForm((prev) => ({
+  const handleFormChange = (field: keyof FormState, value: string) => {
+    setForm((prev) => ({
       ...prev,
       [field]: value,
       error: '',
@@ -46,85 +40,51 @@ export const VendorSignUp: React.FC = () => {
     return emailRegex.test(email);
   };
 
-  const handleSignUpSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!signUpForm.name.trim()) {
-      setSignUpForm((prev) => ({
-        ...prev,
-        error: 'Please enter your name',
-      }));
-      return;
+    if (mode === 'sign-up') {
+      if (!form.name.trim()) {
+        setForm((prev) => ({
+          ...prev,
+          error: 'Please enter your name',
+        }));
+        return;
+      }
     }
 
-    if (!signUpForm.email.trim()) {
-      setSignUpForm((prev) => ({
+    if (!form.email.trim()) {
+      setForm((prev) => ({
         ...prev,
         error: 'Please enter your email address',
       }));
       return;
     }
 
-    if (!validateEmail(signUpForm.email)) {
-      setSignUpForm((prev) => ({
+    if (!validateEmail(form.email)) {
+      setForm((prev) => ({
         ...prev,
         error: 'Please enter a valid email address',
       }));
       return;
     }
 
-    setSignUpLoading(true);
+    setLoading(true);
     try {
       // TODO: Replace with actual API call
-      console.log('Sign up attempt:', signUpForm);
+      console.log(`${mode} attempt:`, form);
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
-      // In real implementation, redirect to vendor registration page
-      // router.push(`/vendor/register?email=${signUpForm.email}`);
+      // In real implementation:
+      // - For sign-up: redirect to vendor registration page
+      // - For sign-in: redirect to vendor dashboard
     } catch {
-      setSignUpForm((prev) => ({
+      setForm((prev) => ({
         ...prev,
         error: 'An error occurred. Please try again.',
       }));
     } finally {
-      setSignUpLoading(false);
-    }
-  };
-
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!loginForm.email.trim()) {
-      setLoginForm((prev) => ({
-        ...prev,
-        error: 'Please enter your email address',
-      }));
-      return;
-    }
-
-    if (!validateEmail(loginForm.email)) {
-      setLoginForm((prev) => ({
-        ...prev,
-        error: 'Please enter a valid email address',
-      }));
-      return;
-    }
-
-    setLoginLoading(true);
-    try {
-      // TODO: Replace with actual API call
-      console.log('Login attempt:', loginForm);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // In real implementation, handle login logic
-      // router.push('/vendor/dashboard');
-    } catch {
-      setLoginForm((prev) => ({
-        ...prev,
-        error: 'An error occurred. Please try again.',
-      }));
-    } finally {
-      setLoginLoading(false);
+      setLoading(false);
     }
   };
 
@@ -132,98 +92,91 @@ export const VendorSignUp: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-white">
       {/* Header */}
       <header className="border-b border-stroke py-6 px-4">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-semibold text-dark">Vendor Portal</h1>
-          <p className="text-textMuted mt-1">Join our vendor network or access your account</p>
+          <p className="text-textMuted mt-1">Access your vendor account</p>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Sign Up Section */}
-            <div className="bg-white border border-stroke rounded-lg p-8 shadow-sm">
-              <h2 className="text-xl font-semibold text-dark mb-2">Create a New Account</h2>
-              <p className="text-textMuted mb-6 text-sm">Register your business to get started</p>
+      <main className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Mode Selector */}
+          <div className="mb-8">
+            <SegmentedControl
+              items={[
+                { id: 'sign-up', label: 'Sign Up', active: mode === 'sign-up', onClick: () => handleModeChange('sign-up') },
+                { id: 'sign-in', label: 'Sign In', active: mode === 'sign-in', onClick: () => handleModeChange('sign-in') },
+              ]}
+              rounded="semi"
+              className="w-full"
+            />
+          </div>
 
-              <form onSubmit={handleSignUpSubmit} className="space-y-4">
+          {/* Unified Form */}
+          <div className="bg-white border border-stroke rounded-lg p-8 shadow-sm">
+            <h2 className="text-xl font-semibold text-dark mb-2">
+              {mode === 'sign-up' ? 'Create a New Account' : 'Welcome Back'}
+            </h2>
+            <p className="text-textMuted mb-6 text-sm">
+              {mode === 'sign-up'
+                ? 'Register your business to get started'
+                : 'Sign in to access your vendor dashboard'}
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name field - only visible in sign-up mode */}
+              {mode === 'sign-up' && (
                 <Input
                   label="Full Name"
                   placeholder="Enter your full name"
                   type="text"
-                  value={signUpForm.name}
-                  onChange={(e) => handleSignUpChange('name', e.target.value)}
-                  disabled={signUpLoading}
+                  value={form.name}
+                  onChange={(e) => handleFormChange('name', e.target.value)}
+                  disabled={loading}
                   showLabel={true}
                   showHelperText={false}
                 />
+              )}
 
-                <Input
-                  label="Company Email Address"
-                  placeholder="Enter your company email"
-                  type="email"
-                  value={signUpForm.email}
-                  onChange={(e) => handleSignUpChange('email', e.target.value)}
-                  disabled={signUpLoading}
-                  status={signUpForm.error ? 'Error' : 'Default'}
-                  helperText={signUpForm.error}
-                  showLabel={true}
-                  showHelperText={!!signUpForm.error}
-                />
+              {/* Email field */}
+              <Input
+                label="Company Email Address"
+                placeholder="Enter your company email"
+                type="email"
+                value={form.email}
+                onChange={(e) => handleFormChange('email', e.target.value)}
+                disabled={loading}
+                status={form.error ? 'Error' : 'Default'}
+                helperText={form.error}
+                showLabel={true}
+                showHelperText={!!form.error}
+              />
 
-                <div className="pt-2">
-                  <Button
-                    variant="secondary"
-                    type="submit"
-                    disabled={signUpLoading}
-                    className="w-full"
-                  >
-                    {signUpLoading ? 'Creating Account...' : 'Register'}
-                  </Button>
-                </div>
-              </form>
+              {/* Submit Button */}
+              <div className="pt-2">
+                <Button
+                  variant="secondary"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading
+                    ? mode === 'sign-up'
+                      ? 'Creating Account...'
+                      : 'Signing In...'
+                    : mode === 'sign-up'
+                    ? 'Register'
+                    : 'Login'}
+                </Button>
+              </div>
+            </form>
 
-              <p className="text-xs text-textMuted text-center mt-6">
-                We'll send you a verification email at the address above
-              </p>
-            </div>
-
-            {/* Login Section */}
-            <div className="bg-white border border-stroke rounded-lg p-8 shadow-sm">
-              <h2 className="text-xl font-semibold text-dark mb-2">Sign In to Your Account</h2>
-              <p className="text-textMuted mb-6 text-sm">Access your vendor dashboard</p>
-
-              <form onSubmit={handleLoginSubmit} className="space-y-4">
-                <Input
-                  label="Company Email Address"
-                  placeholder="Enter your company email"
-                  type="email"
-                  value={loginForm.email}
-                  onChange={(e) => handleLoginChange('email', e.target.value)}
-                  disabled={loginLoading}
-                  status={loginForm.error ? 'Error' : 'Default'}
-                  helperText={loginForm.error}
-                  showLabel={true}
-                  showHelperText={!!loginForm.error}
-                />
-
-                <div className="pt-2">
-                  <Button
-                    variant="secondary"
-                    type="submit"
-                    disabled={loginLoading}
-                    className="w-full"
-                  >
-                    {loginLoading ? 'Signing In...' : 'Login'}
-                  </Button>
-                </div>
-              </form>
-
-              <p className="text-xs text-textMuted text-center mt-6">
-                Don't have an account? Register on the left to get started
-              </p>
-            </div>
+            <p className="text-xs text-textMuted text-center mt-6">
+              {mode === 'sign-up'
+                ? "We'll send you a verification email at the address above"
+                : 'Secure verification will be sent to your email'}
+            </p>
           </div>
         </div>
       </main>

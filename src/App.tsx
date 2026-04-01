@@ -1,5 +1,5 @@
-import { TooltipTextareaShowcaseSection } from '../components/sections/tooltip-textarea-showcase-section'
+import VendorSignUp from '../app/(marketing)/vendor-signup/page'
 
 export default function App() {
-  return <TooltipTextareaShowcaseSection />
+  return <VendorSignUp />
 }
