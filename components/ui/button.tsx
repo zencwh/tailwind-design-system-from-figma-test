@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline'
 export type ButtonSize = 'sm' | 'md'
@@ -26,6 +26,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: ReactNode | null
   buttonText?: string
   children?: ReactNode
+  href?: string
 }
 
 export function Button({
@@ -43,6 +44,7 @@ export function Button({
   children,
   className = '',
   disabled,
+  href,
   ...props
 }: ButtonProps) {
   const base =
@@ -93,16 +95,42 @@ export function Button({
 
   const iconWrap = 'inline-flex size-5 items-center justify-center'
   const label = children ?? buttonText ?? 'Button'
+  const isDisabled = Boolean(disabled) || state === 'Disable'
+
+  const content = (
+    <>
+      {showLeftIcon ? <span className={iconWrap}>{iconLeft ?? <span className="text-[18px] leading-none">+</span>}</span> : null}
+      <span>{label}</span>
+      {showRightIcon ? <span className={iconWrap}>{rightIcon ?? <span className="text-[18px] leading-none">+</span>}</span> : null}
+    </>
+  )
+
+  if (href) {
+    const anchorProps = props as unknown as AnchorHTMLAttributes<HTMLAnchorElement>
+
+    return (
+      <a
+        href={isDisabled ? undefined : href}
+        aria-disabled={isDisabled}
+        className={[base, 'border border-solid', sizeClasses, roundClasses, kindClasses, stateClasses, className].join(' ')}
+        {...anchorProps}
+        onClick={(e) => {
+          if (isDisabled) e.preventDefault()
+          anchorProps.onClick?.(e)
+        }}
+      >
+        {content}
+      </a>
+    )
+  }
 
   return (
     <button
       className={[base, 'border border-solid', sizeClasses, roundClasses, kindClasses, stateClasses, className].join(' ')}
-      disabled={disabled || state === 'Disable'}
+      disabled={isDisabled}
       {...props}
     >
-      {showLeftIcon ? <span className={iconWrap}>{iconLeft ?? <span className="text-[18px] leading-none">+</span>}</span> : null}
-      <span>{label}</span>
-      {showRightIcon ? <span className={iconWrap}>{rightIcon ?? <span className="text-[18px] leading-none">+</span>}</span> : null}
+      {content}
     </button>
   )
 }

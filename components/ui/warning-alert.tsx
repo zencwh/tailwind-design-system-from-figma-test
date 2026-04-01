@@ -4,7 +4,7 @@ const imgGroup = 'https://www.figma.com/api/mcp/asset/73aa0069-6003-4b7e-97c1-e9
 const imgGroup1 = 'https://www.figma.com/api/mcp/asset/99082d0e-cfb6-44d4-8f66-09de44ddc98c'
 const imgVector = 'https://www.figma.com/api/mcp/asset/75046931-83ab-40e5-ac3a-96e75814804b'
 
-export interface WarningAlertProps extends HTMLAttributes<HTMLDivElement> {
+export interface WarningAlertProps extends Omit<HTMLAttributes<HTMLDivElement>, 'style'> {
   /**
    * Maps directly to the Figma component's variants for `310:9725`.
    * - `1` => Style=1 (white card)
@@ -34,17 +34,18 @@ export default function WarningAlert({
   const is2 = style === '2'
   const is3 = style === '3'
 
+  const rootTemplate = `content-stretch flex flex-col items-start relative ${
+    is3
+      ? 'bg-white border-[#fbbf24] border-l-6 border-solid justify-center px-[24px] py-[20px] rounded-[6px] w-[655px]'
+      : is2
+        ? 'bg-[#fffbeb] border-[#fbbf24] border-l-6 border-solid p-[35px] rounded-[8px]'
+        : 'bg-white p-[35px] rounded-[8px] shadow-[0px_1px_3px_0px_rgba(166,175,195,0.4)]'
+  }`
+
   return (
     <div
       className={
-        className ||
-        `content-stretch flex flex-col items-start relative ${
-          is3
-            ? 'bg-white border-[#fbbf24] border-l-6 border-solid justify-center px-[24px] py-[20px] rounded-[6px] w-[655px]'
-            : is2
-              ? 'bg-[#fffbeb] border-[#fbbf24] border-l-6 border-solid p-[35px] rounded-[8px]'
-              : 'bg-white p-[35px] rounded-[8px] shadow-[0px_1px_3px_0px_rgba(166,175,195,0.4)]'
-        }`
+        className ? `${rootTemplate} ${className}` : rootTemplate
       }
       role="alert"
       aria-live="polite"

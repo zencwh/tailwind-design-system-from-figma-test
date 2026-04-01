@@ -1,7 +1,5 @@
-import { PortfolioGridSection } from '../components/sections/portfolio-grid'
+import { TooltipTextareaShowcaseSection } from '../components/sections/tooltip-textarea-showcase-section'
 
 export default function App() {
-  return (
-    <PortfolioGridSection />
-  )
+  return <TooltipTextareaShowcaseSection />
 }

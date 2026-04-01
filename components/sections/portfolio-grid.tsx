@@ -11,12 +11,13 @@ export type PortfolioItem = {
   featured?: boolean
 }
 
-const imgRectangle4504 = 'https://www.figma.com/api/mcp/asset/e8e05476-13fa-438d-aee7-2d56343c3111'
-const imgRectangle4505 = 'https://www.figma.com/api/mcp/asset/e1ec2c25-db2d-467a-ac51-4f7fef9cbcba'
-const imgRectangle4506 = 'https://www.figma.com/api/mcp/asset/cad4333a-74c5-41c1-ac97-1395333a8214'
-const imgRectangle4507 = 'https://www.figma.com/api/mcp/asset/98ceee70-ce30-4690-9ad8-2f8a89a908db'
-const imgRectangle4508 = 'https://www.figma.com/api/mcp/asset/646dcc80-9429-46a1-b007-f393b84f027e'
-const imgRectangle4509 = 'https://www.figma.com/api/mcp/asset/ddff70db-f430-4fdb-938f-2991b8ff56ec'
+// NOTE: These are Figma MCP asset URLs (time-limited). If images disappear, re-fetch via MCP.
+const imgRectangle4504 = 'https://www.figma.com/api/mcp/asset/c16987c4-ba73-445b-94d2-d755371c7b19'
+const imgRectangle4505 = 'https://www.figma.com/api/mcp/asset/2f04ed27-cc26-4583-a5ba-574120215427'
+const imgRectangle4506 = 'https://www.figma.com/api/mcp/asset/6ae24a3d-21b5-42fa-be71-9ab2d70c4225'
+const imgRectangle4507 = 'https://www.figma.com/api/mcp/asset/41c822db-db56-4854-88ee-e999fcda2270'
+const imgRectangle4508 = 'https://www.figma.com/api/mcp/asset/096f9dce-f439-4a4a-82ab-304d5f5389b3'
+const imgRectangle4509 = 'https://www.figma.com/api/mcp/asset/456cf6aa-f695-4efc-a7cb-a8eb67dc7a9a'
 
 const defaultItems: PortfolioItem[] = [
   { id: 'branding-1', category: 'Branding', title: 'Branding Design', imageSrc: imgRectangle4504 },
@@ -80,11 +81,11 @@ function PortfolioCard({ item }: { item: PortfolioItem }) {
   return (
     <article className="h-[399px] w-[370px]">
       <div className="relative h-full">
-        <div className="absolute inset-x-0 top-0 h-[300px] rounded-[10px]">
+        <div className="absolute inset-x-0 top-0 h-[300px] overflow-hidden rounded-[10px]">
           <img
             src={item.imageSrc}
             alt={item.title}
-            className="absolute inset-0 size-full rounded-[10px] object-cover"
+            className="h-full w-full object-cover"
             loading="lazy"
           />
         </div>
@@ -93,7 +94,7 @@ function PortfolioCard({ item }: { item: PortfolioItem }) {
           <div className="relative h-[185px] w-full">
             <div className="absolute inset-0 rounded-[8px] bg-white shadow-[0px_4px_30px_rgba(0,0,0,0.08)]" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-[21px] text-center">
+                <div className="flex flex-col items-center gap-[21px] text-center">
                 <div className="flex flex-col items-center gap-[6px]">
                   <Badge variant="primary" size="sm">
                     {item.category}
@@ -102,7 +103,7 @@ function PortfolioCard({ item }: { item: PortfolioItem }) {
                     {item.title}
                   </h2>
                 </div>
-                <Button variant={buttonVariant} round="md">
+                <Button variant={buttonVariant} round="md" href="#">
                   View Details
                 </Button>
               </div>
