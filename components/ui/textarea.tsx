@@ -26,6 +26,7 @@ export function Textarea({
   disabled,
   value,
   onChangeText,
+  ...rest
 }: TextareaProps) {
   const isDisabled = state === 'Disabled' || Boolean(disabled)
   const isDisabledAndShowLabel = state === 'Disabled' && showLabel
@@ -47,11 +48,12 @@ export function Textarea({
       {((state === 'Default' && showLabel) || (state === 'Hover' && showLabel) || (state === 'Focused' && showLabel) || (!showLabel && !showCounter) || isNotHelperTextAndNotShowLabelAndShowCounter) && (
         <div className="flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative w-full">
           <textarea
+            {...rest}
             value={value}
             onChange={(e) => onChangeText?.(e.target.value)}
             disabled={isDisabled}
             placeholder={placeholder}
-            className={`border-solid flex flex-[1_0_0] items-start min-h-px min-w-px p-[20px] relative rounded-[6px] w-full font-normal leading-[24px] text-[16px] text-[#9ca3af] outline-none ${
+            className={`border-solid flex flex-[1_0_0] items-start min-h-px min-w-px p-[20px] relative rounded-[6px] w-full font-normal leading-[24px] text-[16px] text-dark placeholder:text-[#9ca3af] outline-none ${
               state === 'Disabled' && !showLabel && (!showCounter || (!showHelperText && showCounter))
                 ? 'bg-[#f3f4f6] border border-stroke'
                 : state === 'Focused' && (showLabel || (!showLabel && !showCounter) || (!showHelperText && !showLabel && showCounter))
@@ -93,11 +95,12 @@ export function Textarea({
           </p>
           <div className="flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative w-full">
             <textarea
+              {...rest}
               value={value}
               onChange={(e) => onChangeText?.(e.target.value)}
               disabled={isDisabled}
               placeholder={placeholder}
-              className="bg-[#f3f4f6] border border-stroke border-solid flex flex-[1_0_0] items-start min-h-px min-w-px p-[20px] relative rounded-[6px] w-full font-normal leading-[24px] text-[16px] text-[#9ca3af] outline-none"
+              className="bg-[#f3f4f6] border border-stroke border-solid flex flex-[1_0_0] items-start min-h-px min-w-px p-[20px] relative rounded-[6px] w-full font-normal leading-[24px] text-[16px] text-dark placeholder:text-[#9ca3af] outline-none"
             />
           </div>
         </>

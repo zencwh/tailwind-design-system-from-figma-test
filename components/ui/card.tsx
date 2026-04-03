@@ -22,7 +22,7 @@ export function Card({ title, description, media, ctaLabel, ctaVariant = 'outlin
         <img
           alt={media.alt ?? ''}
           src={media.src}
-          className="absolute inset-0 size-full max-w-none object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
         />
       </div>

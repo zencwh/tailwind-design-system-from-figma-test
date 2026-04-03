@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { SegmentedControl } from '@/components/ui/segmented-control';
+import { Blogs } from '@/components/sections/blogs';
+import { CardGridSection } from '@/components/sections/card-grid';
 
 type AuthMode = 'sign-up' | 'sign-in';
 
@@ -156,7 +158,7 @@ export const VendorSignUp: React.FC = () => {
               {/* Submit Button */}
               <div className="pt-2">
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   type="submit"
                   disabled={loading}
                   className="w-full"
@@ -180,6 +182,20 @@ export const VendorSignUp: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Blog Section */}
+      <section className="py-12 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <Blogs />
+        </div>
+      </section>
+
+      {/* Card Grid Section */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <CardGridSection />
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-stroke bg-white py-6 px-4">

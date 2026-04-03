@@ -87,6 +87,15 @@ export function Blogs({ className }: BlogsProps) {
           </div>
         </div>
       </div>
+
+      {/* Pagination */}
+      <div className="absolute bottom-[40px] left-1/2 -translate-x-1/2 inline-flex items-center gap-2 rounded-[999px] bg-white p-1 shadow-sm">
+        <button className="px-4 py-2 rounded-full border border-stroke text-sm text-muted hover:border-primary hover:text-primary transition">Previous</button>
+        <button className="px-4 py-2 rounded-full bg-primary text-white shadow-sm">1</button>
+        <button className="px-4 py-2 rounded-full bg-white text-dark border border-stroke hover:bg-primary hover:text-white transition">2</button>
+        <button className="px-4 py-2 rounded-full bg-white text-dark border border-stroke hover:bg-primary hover:text-white transition">3</button>
+        <button className="px-4 py-2 rounded-full border border-stroke text-sm text-muted hover:border-primary hover:text-primary transition">Next</button>
+      </div>
     </div>
   );
 }

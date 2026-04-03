@@ -11,6 +11,8 @@ const successCheckImg = 'https://www.figma.com/api/mcp/asset/b8187874-f47b-419d-
 export type InputState = 'Default' | 'Disabled'
 export type InputStatus = 'Default' | 'Error' | 'Success'
 
+export type InputFieldVariant = 'default' | 'primary'
+
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string
   helperText?: string
@@ -21,6 +23,12 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   status?: InputStatus
 
   placeholder?: string
+
+  /** When true, the field spans the full width of its parent instead of a fixed 250px layout. */
+  fullWidth?: boolean
+
+  /** Primary uses the brand border (e.g. focused/active field in marketing forms). */
+  fieldVariant?: InputFieldVariant
 
   leftIcon?: boolean
   leftIconNode?: ReactNode | null
@@ -41,6 +49,8 @@ export function Input({
   leftIconNode = null,
   rightIcon = true,
   rightIconNode = null,
+  fullWidth = false,
+  fieldVariant = 'default',
   className = '',
   id,
   disabled,
@@ -66,21 +76,26 @@ export function Input({
       ? 'border-[#f23030]'
       : isSuccess
         ? 'border-[#22ad5c]'
-        : 'border-[#dfe4ea]'
+        : fieldVariant === 'primary'
+          ? 'border-[#3758F9]'
+          : 'border-[#dfe4ea]'
 
   const inputTextClass = isDisabled ? 'text-[#6B7280]' : 'text-[#111928]'
+
+  const widthClass = fullWidth ? 'w-full' : 'w-[250px]'
 
   return (
     <div
       className={[
-        'content-stretch flex flex-col gap-[5px] items-start w-[250px]',
+        'content-stretch flex flex-col gap-[5px] items-start',
+        widthClass,
         className,
       ].join(' ')}
     >
       {showLabel ? (
         <label
           htmlFor={inputId}
-          className="content-stretch flex items-start relative shrink-0 w-[250px]"
+          className={['content-stretch flex items-start relative shrink-0', widthClass].join(' ')}
         >
           <p
             className={[
