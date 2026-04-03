@@ -27,12 +27,14 @@ export function ProgressBars({ type = 'Primary', style = '1', percentage = '80%'
 
   if (style === '3') {
     return (
-      <div className={['relative h-[20px] w-[470px]', className].join(' ')}>
-        <div className="absolute inset-x-0 top-[9px] h-[2px] rounded bg-stroke" />
-        <div className="absolute left-0 top-[9px] h-[2px] rounded" style={{ width, backgroundColor: color }} />
-        <p className="absolute left-0 top-0 text-[12px] font-medium leading-[20px] text-white" style={{ left: `calc(${width} - 26px)` }}>
-          {percentage}
-        </p>
+      <div className={['relative h-[20px] w-[470px] max-w-full', className].join(' ')}>
+        <div className="absolute inset-0 rounded-full bg-stroke" aria-hidden />
+        <div
+          className="absolute inset-y-0 left-0 flex min-w-0 items-center justify-center overflow-hidden rounded-full px-2"
+          style={{ width, backgroundColor: color }}
+        >
+          <span className="text-center text-[12px] font-medium leading-[20px] text-white">{percentage}</span>
+        </div>
       </div>
     )
   }

@@ -30,6 +30,12 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   /** Primary uses the brand border (e.g. focused/active field in marketing forms). */
   fieldVariant?: InputFieldVariant
 
+  /** When set, replaces default border/background classes on the field shell (e.g. disabled outline). */
+  fieldClassName?: string
+
+  /** Overrides label text color classes (e.g. disabled outline fields that keep a dark label). */
+  labelClassName?: string
+
   leftIcon?: boolean
   leftIconNode?: ReactNode | null
 
@@ -51,6 +57,8 @@ export function Input({
   rightIconNode = null,
   fullWidth = false,
   fieldVariant = 'default',
+  fieldClassName,
+  labelClassName,
   className = '',
   id,
   disabled,
@@ -61,7 +69,7 @@ export function Input({
   const isError = status === 'Error'
   const isSuccess = status === 'Success'
 
-  const labelTextClass = isDisabled ? 'text-[#6B7280]' : 'text-[#111928]'
+  const labelTextClass = labelClassName ?? (isDisabled ? 'text-[#6B7280]' : 'text-[#111928]')
   const helperTextClass = isDisabled
     ? 'text-[#6B7280]'
     : isError
@@ -70,15 +78,17 @@ export function Input({
         ? 'text-[#22AD5C]'
         : 'text-[#4B5563]'
 
-  const borderClass = isDisabled
-    ? 'border-[#f3f4f6]'
-    : isError
-      ? 'border-[#f23030]'
-      : isSuccess
-        ? 'border-[#22ad5c]'
-        : fieldVariant === 'primary'
-          ? 'border-[#3758F9]'
-          : 'border-[#dfe4ea]'
+  const borderClass = fieldClassName
+    ? ''
+    : isDisabled
+      ? 'border border-[#f3f4f6]'
+      : isError
+        ? 'border border-[#f23030]'
+        : isSuccess
+          ? 'border border-[#22ad5c]'
+          : fieldVariant === 'primary'
+            ? 'border-2 border-[#3758F9]'
+            : 'border border-[#dfe4ea]'
 
   const inputTextClass = isDisabled ? 'text-[#6B7280]' : 'text-[#111928]'
 
@@ -109,11 +119,14 @@ export function Input({
       ) : null}
 
       <div
-        className={[
-          'bg-white border border-solid content-stretch flex items-center gap-[10px] min-h-px min-w-px pl-[20px] pr-[16px] py-[12px] relative rounded-[6px] w-full',
-          isDisabled ? 'bg-[#f3f4f6]' : 'bg-white',
-          borderClass,
-        ].join(' ')}
+        className={
+          fieldClassName ??
+          [
+            'bg-white border-solid content-stretch flex items-center gap-[10px] min-h-px min-w-px pl-[20px] pr-[16px] py-[12px] relative rounded-[6px] w-full',
+            isDisabled ? 'bg-[#f3f4f6]' : 'bg-white',
+            borderClass,
+          ].join(' ')
+        }
       >
         {leftIcon ? (
           leftIconNode ? (
